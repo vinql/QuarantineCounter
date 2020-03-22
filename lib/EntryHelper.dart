@@ -17,3 +17,8 @@ Future<String> readData() async {
   final file = await getFile();
   return file.readAsString();
 }
+
+Future<void> deleteFile() async {
+  final File file = await getFile();
+  file.delete();
+}

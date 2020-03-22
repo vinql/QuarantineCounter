@@ -35,9 +35,13 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.add),
+              icon: Icon(Icons.restore_from_trash),
               onPressed: () async {
-                Map<String, dynamic> newEntry = Map();
+                helper.deleteFile();
+                _listOfEntries = List();
+                setState(() {
+                  
+                });
               },
             ),
           ],
