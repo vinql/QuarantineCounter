@@ -18,7 +18,19 @@ class _NewEntryPageState extends State<NewEntryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Day x"),
+        title: Text("Report: day " +
+                  ((DateTime.fromMicrosecondsSinceEpoch(DateTime(
+                                              DateTime.now().year,
+                                              DateTime.now().month,
+                                              DateTime.now().day)
+                                          .microsecondsSinceEpoch -
+                                      int.parse(widget.data[0]["timestamp"]
+                                          .toString()))
+                                  .microsecondsSinceEpoch /
+                              8.64e10)
+                          .floor())
+                      .toString() +
+                  " of quarantine"),
       ),
       body: SingleChildScrollView(child: Column(
         children: <Widget>[
