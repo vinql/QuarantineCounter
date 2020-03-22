@@ -63,25 +63,42 @@ class _HomePageState extends State<HomePage> {
                 setState(() {});
               },
             ),
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () async {
+                List l = List();
+                Map<String, dynamic> m = Map();
+
+                m["timestamp"] = DateTime(DateTime.now().year,
+                        DateTime.now().month, DateTime.now().day)
+                    .microsecondsSinceEpoch
+                    .toString();
+
+                for (int i = 0; i < 10; i++) {
+                  m["text"] = "Entry no. $i";
+                  l.add(m);
+                }
+
+                _listOfEntries = l;
+
+                helper.writeData(l).then((value) => setState(() => null));
+              },
+            ),
           ],
         ),
-        body: Column(
-          children: <Widget>[
-            FutureBuilder(
-                future: helper.readData(),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                    case ConnectionState.none:
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    default:
-                      return _getBody();
-                  }
-                }),
-          ],
-        ));
+        body: FutureBuilder(
+            future: helper.readData(),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                case ConnectionState.none:
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                default:
+                  return _getBody();
+              }
+            }));
   }
 
   Widget _getBody() {
@@ -99,7 +116,7 @@ class _HomePageState extends State<HomePage> {
 
               firstEntry["timestamp"] =
                   initialDate.microsecondsSinceEpoch.toString();
-              firstEntry["data"] = "Quarantine started.";
+              firstEntry["text"] = "Quarantine started.";
 
               _listOfEntries.add(firstEntry);
               helper.writeData(_listOfEntries);
@@ -110,41 +127,52 @@ class _HomePageState extends State<HomePage> {
             },
             child: Text("When did your quarantine started?"),
           )
-        : Column(children: <Widget>[
-          IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewEntryPage(_listOfEntries)))
-                  .then((value) => setState(() => null)),
-            ),
-            ListView.builder(
-                shrinkWrap: true,
-                itemCount: _listOfEntries.length,
-                reverse: true,
-                itemBuilder: (context, index) {
-                  print("Index = $index");
-                  print("Diff  = ${this._getDayCountAsString(index)}");
+        : Column(
+            children: <Widget>[
+              RaisedButton(
+                child: Row(
+                  children: <Widget>[Icon(Icons.add), Text("New entry")],
+                ),
+                onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NewEntryPage(_listOfEntries)))
+                    .then((value) => setState(() => null)),
+              ),
+              Expanded(
+                child: ListView.builder(
+                    itemCount: _listOfEntries.length,
+                    reverse: true,
+                    itemBuilder: (context, index) {
+                      print("Index = $index");
+                      print("Diff  = ${this._getDayCountAsString(index)}");
 
-                  DateTime date = DateTime.fromMicrosecondsSinceEpoch(
-                      int.parse(_listOfEntries[index]["timestamp"].toString()));
+                      DateTime date = DateTime.fromMicrosecondsSinceEpoch(
+                          int.parse(
+                              _listOfEntries[index]["timestamp"].toString()));
 
-                  int timespan = ((date.microsecondsSinceEpoch -
-                              DateTime.fromMicrosecondsSinceEpoch(int.parse(
-                                      _listOfEntries[0]["timestamp"]
-                                          .toString()))
-                                  .microsecondsSinceEpoch) /
-                          8.64e10)
-                      .floor();
-                  return Container(
-                    margin: EdgeInsets.only(
-                      top: 15,
-                    ),
-                    child: Text(_listOfEntries[index].toString()),
-                  );
-                })
-          ]);
+                      int timespan = ((date.microsecondsSinceEpoch -
+                                  DateTime.fromMicrosecondsSinceEpoch(int.parse(
+                                          _listOfEntries[0]["timestamp"]
+                                              .toString()))
+                                      .microsecondsSinceEpoch) /
+                              8.64e10)
+                          .floor();
+                      return Container(
+                        height: 50,
+                        margin: EdgeInsets.only(
+                          top: 15,
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            Text(_listOfEntries[index]["text"])
+                          ],
+                        ),
+                      );
+                    }),
+              ),
+            ],
+          );
   }
 
   String _getDayCountAsString(int index) {
