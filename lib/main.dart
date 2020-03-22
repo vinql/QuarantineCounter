@@ -67,14 +67,6 @@ class _HomePageState extends State<HomePage> {
         ),
         body: Column(
           children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewEntryPage(_listOfEntries)))
-                  .then((value) => setState(() => null)),
-            ),
             FutureBuilder(
                 future: helper.readData(),
                 builder: (context, snapshot) {
@@ -118,30 +110,41 @@ class _HomePageState extends State<HomePage> {
             },
             child: Text("When did your quarantine started?"),
           )
-        : ListView.builder(
-            shrinkWrap: true,
-            itemCount: _listOfEntries.length,
-            reverse: true,
-            itemBuilder: (context, index) {
-              print("Index = $index");
-              print("Diff  = ${this._getDayCountAsString(index)}");
+        : Column(children: <Widget>[
+          IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NewEntryPage(_listOfEntries)))
+                  .then((value) => setState(() => null)),
+            ),
+            ListView.builder(
+                shrinkWrap: true,
+                itemCount: _listOfEntries.length,
+                reverse: true,
+                itemBuilder: (context, index) {
+                  print("Index = $index");
+                  print("Diff  = ${this._getDayCountAsString(index)}");
 
-              DateTime date = DateTime.fromMicrosecondsSinceEpoch(
-                  int.parse(_listOfEntries[index]["timestamp"].toString()));
+                  DateTime date = DateTime.fromMicrosecondsSinceEpoch(
+                      int.parse(_listOfEntries[index]["timestamp"].toString()));
 
-              int timespan = ((date.microsecondsSinceEpoch -
-                          DateTime.fromMicrosecondsSinceEpoch(int.parse(
-                                  _listOfEntries[0]["timestamp"].toString()))
-                              .microsecondsSinceEpoch) /
-                      8.64e10)
-                  .floor();
-              return Container(
-                margin: EdgeInsets.only(
-                  top: 15,
-                ),
-                child: Text(_listOfEntries[index].toString()),
-              );
-            });
+                  int timespan = ((date.microsecondsSinceEpoch -
+                              DateTime.fromMicrosecondsSinceEpoch(int.parse(
+                                      _listOfEntries[0]["timestamp"]
+                                          .toString()))
+                                  .microsecondsSinceEpoch) /
+                          8.64e10)
+                      .floor();
+                  return Container(
+                    margin: EdgeInsets.only(
+                      top: 15,
+                    ),
+                    child: Text(_listOfEntries[index].toString()),
+                  );
+                })
+          ]);
   }
 
   String _getDayCountAsString(int index) {
