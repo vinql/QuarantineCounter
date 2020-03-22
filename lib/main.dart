@@ -142,7 +142,6 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: ListView.builder(
                     itemCount: _listOfEntries.length,
-                    reverse: true,
                     itemBuilder: (context, index) {
                       print("Index = $index");
                       print("Diff  = ${this._getDayCountAsString(index)}");
@@ -165,7 +164,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         child: Column(
                           children: <Widget>[
-                            Text(_listOfEntries[index]["text"])
+                            Text(_listOfEntries.reversed.toList()[index]["text"])
                           ],
                         ),
                       );
