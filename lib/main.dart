@@ -33,7 +33,21 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Covid-19 outbreak"),
+          title: Text(_listOfEntries.length > 0
+              ? "Day " +
+                  ((DateTime.fromMicrosecondsSinceEpoch(DateTime(
+                                              DateTime.now().year,
+                                              DateTime.now().month,
+                                              DateTime.now().day)
+                                          .microsecondsSinceEpoch -
+                                      int.parse(_listOfEntries[0]["timestamp"]
+                                          .toString()))
+                                  .microsecondsSinceEpoch /
+                              8.64e10)
+                          .floor())
+                      .toString() +
+                  " of quarantine"
+              : "Covid-19 outbreak"),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.bug_report),
@@ -85,9 +99,11 @@ class _HomePageState extends State<HomePage> {
               Map<String, dynamic> firstEntry = Map();
               DateTime initialDate = await showDatePicker(
                   context: context,
-                  initialDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                  initialDate: DateTime(DateTime.now().year,
+                      DateTime.now().month, DateTime.now().day),
                   firstDate: DateTime(2020),
-                  lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
+                  lastDate: DateTime(DateTime.now().year, DateTime.now().month,
+                      DateTime.now().day));
 
               firstEntry["timestamp"] =
                   initialDate.microsecondsSinceEpoch.toString();
