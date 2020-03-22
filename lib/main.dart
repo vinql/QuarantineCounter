@@ -12,7 +12,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List _listOfEntries = [];
-  DateTime _firstEntryDate;
 
   @override
   void initState() {
@@ -22,10 +21,6 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _listOfEntries = json.decode(value);
       });
-
-      if (_listOfEntries != null && _listOfEntries.length > 0)
-        _firstEntryDate = DateTime.fromMicrosecondsSinceEpoch(
-            int.parse(_listOfEntries[0]["timestamp"].toString()));
     });
   }
 
@@ -117,17 +112,6 @@ class _HomePageState extends State<HomePage> {
                       print(
                           "Diff  = ${this._getDayCountAsString(_listOfEntries.reversed.toList()[index]["timestamp"])}");
 
-                      DateTime date = DateTime.fromMicrosecondsSinceEpoch(
-                          int.parse(
-                              _listOfEntries[index]["timestamp"].toString()));
-
-                      int timespan = ((date.microsecondsSinceEpoch -
-                                  DateTime.fromMicrosecondsSinceEpoch(int.parse(
-                                          _listOfEntries[0]["timestamp"]
-                                              .toString()))
-                                      .microsecondsSinceEpoch) /
-                              8.64e10)
-                          .floor();
                       return Container(
                         margin: EdgeInsets.only(top: 10, bottom: 10),
                         padding: EdgeInsets.all(20),
