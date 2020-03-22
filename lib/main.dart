@@ -48,43 +48,6 @@ class _HomePageState extends State<HomePage> {
                       .toString() +
                   " of quarantine"
               : "Covid-19 outbreak"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.bug_report),
-              onPressed: () async {
-                print(await helper.readData());
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.restore_from_trash),
-              onPressed: () async {
-                helper.deleteFile();
-                _listOfEntries = List();
-                setState(() {});
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () async {
-                List l = List();
-                Map<String, dynamic> m = Map();
-
-                m["timestamp"] = DateTime(DateTime.now().year,
-                        DateTime.now().month, DateTime.now().day)
-                    .microsecondsSinceEpoch
-                    .toString();
-
-                for (int i = 0; i < 10; i++) {
-                  m["text"] = "Entry no. $i\nhahaushua\nvishvish";
-                  l.add(m);
-                }
-
-                _listOfEntries = l;
-
-                helper.writeData(l).then((value) => setState(() => null));
-              },
-            ),
-          ],
         ),
         body: Padding(
           padding: const EdgeInsets.only(top: 5, left: 12.0, right: 12.0),
@@ -169,13 +132,13 @@ class _HomePageState extends State<HomePage> {
                         margin: EdgeInsets.only(top: 10, bottom: 10),
                         padding: EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [BoxShadow(
-                            color: Colors.black12,
-                            offset: Offset(0, 2),
-                            blurRadius: 5
-                          )]
-                        ),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black12,
+                                  offset: Offset(0, 2),
+                                  blurRadius: 5)
+                            ]),
                         child: Column(
                           children: <Widget>[
                             Row(
@@ -190,7 +153,8 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                             SizedBox(height: 10),
-                            Text("${DateTime.fromMicrosecondsSinceEpoch(int.parse(_listOfEntries.reversed.toList()[index]["timestamp"].toString())).day}/${DateTime.fromMicrosecondsSinceEpoch(int.parse(_listOfEntries.reversed.toList()[index]["timestamp"].toString())).month}/${DateTime.fromMicrosecondsSinceEpoch(int.parse(_listOfEntries.reversed.toList()[index]["timestamp"].toString())).year}"),
+                            Text(
+                                "${DateTime.fromMicrosecondsSinceEpoch(int.parse(_listOfEntries.reversed.toList()[index]["timestamp"].toString())).day}/${DateTime.fromMicrosecondsSinceEpoch(int.parse(_listOfEntries.reversed.toList()[index]["timestamp"].toString())).month}/${DateTime.fromMicrosecondsSinceEpoch(int.parse(_listOfEntries.reversed.toList()[index]["timestamp"].toString())).year}"),
                             SizedBox(height: 10),
                             Container(
                                 child: Text(

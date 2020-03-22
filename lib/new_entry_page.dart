@@ -32,12 +32,13 @@ class _NewEntryPageState extends State<NewEntryPage> {
                       .toString() +
                   " of quarantine"),
       ),
-      body: SingleChildScrollView(child: Column(
+      body: SingleChildScrollView(padding: EdgeInsets.all(10), child: Column(
         children: <Widget>[
           TextField(
             controller: _controller,
             keyboardType: TextInputType.multiline,
             maxLines: null,
+            decoration: InputDecoration(hintText: "How's it going?"),
           ),
           IconButton(
             icon: Icon(Icons.send),
