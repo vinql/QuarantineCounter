@@ -12,14 +12,21 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List _listOfEntries = [];
+  DateTime _firstEntryDate;
 
   @override
   void initState() {
     super.initState();
 
-    helper
-        .readData()
-        .then((value) => setState(() => _listOfEntries = json.decode(value)));
+    helper.readData().then((value) {
+      setState(() {
+        _listOfEntries = json.decode(value);
+      });
+
+      if (_listOfEntries != null && _listOfEntries.length > 0)
+        _firstEntryDate = DateTime.fromMicrosecondsSinceEpoch(
+            int.parse(_listOfEntries[0]["timestamp"].toString()));
+    });
   }
 
   @override
@@ -39,9 +46,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () async {
                 helper.deleteFile();
                 _listOfEntries = List();
-                setState(() {
-                  
-                });
+                setState(() {});
               },
             ),
           ],
@@ -51,9 +56,10 @@ class _HomePageState extends State<HomePage> {
             IconButton(
               icon: Icon(Icons.add),
               onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => NewEntryPage(_listOfEntries))).then((value) => setState(()=>null)),
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NewEntryPage(_listOfEntries)))
+                  .then((value) => setState(() => null)),
             ),
             FutureBuilder(
                 future: helper.readData(),
@@ -79,9 +85,9 @@ class _HomePageState extends State<HomePage> {
               Map<String, dynamic> firstEntry = Map();
               DateTime initialDate = await showDatePicker(
                   context: context,
-                  initialDate: DateTime.now(),
+                  initialDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
                   firstDate: DateTime(2020),
-                  lastDate: DateTime(2020, 12, 31));
+                  lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
 
               firstEntry["timestamp"] =
                   initialDate.microsecondsSinceEpoch.toString();
@@ -102,6 +108,7 @@ class _HomePageState extends State<HomePage> {
             reverse: true,
             itemBuilder: (context, index) {
               print("Index = $index");
+              print("Diff  = ${this._getDayCountAsString(index)}");
 
               DateTime date = DateTime.fromMicrosecondsSinceEpoch(
                   int.parse(_listOfEntries[index]["timestamp"].toString()));
@@ -119,5 +126,18 @@ class _HomePageState extends State<HomePage> {
                 child: Text(_listOfEntries[index].toString()),
               );
             });
+  }
+
+  String _getDayCountAsString(int index) {
+    if (this._listOfEntries == null || this._listOfEntries.length == 0)
+      return null;
+
+    return ((DateTime.fromMicrosecondsSinceEpoch(int.parse(
+                            _listOfEntries[index]["timestamp"].toString()) -
+                        int.parse(_listOfEntries[0]["timestamp"].toString()))
+                    .microsecondsSinceEpoch /
+                8.64e10)
+            .floor())
+        .toString();
   }
 }

@@ -32,10 +32,11 @@ class _NewEntryPageState extends State<NewEntryPage> {
             onPressed: () {
               Map<String, dynamic> newEntry = Map();
               newEntry["text"] = _controller.text;
-              newEntry["timestamp"] = "19";
+
+              DateTime date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+              newEntry["timestamp"] = date.microsecondsSinceEpoch.toString();
 
               widget.data.add(newEntry);
-
               helper.writeData(widget.data);
 
               Navigator.pop(context);
